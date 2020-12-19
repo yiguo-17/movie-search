@@ -1,23 +1,17 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { useState } from "react";
 import "./App.css";
 import Search from "./Search/Search";
-import Movie from "./Movie/Movie";
+import { MoviesContext } from "./context/MovieContext";//for context
+import SearchList from "./Search/SearchList";
 
-function AppNav() {
+function App() {
   const [searchValue, setSearchValue] = useState("");
 
   const [movieResults, setMovieResults] = useState([]);
 
-  const [isFetching, setIsFetching] = useState(false);
-
   async function fetchMovieListAPI(inputValue) {
+    
     setSearchValue(inputValue);
-
-    if (!searchValue) {
-      setIsFetching(false);
-      return;
-    }
 
     const MOVIE_API_KEY = process.env.REACT_APP_MOVIE_OMDB_API;
 
@@ -28,41 +22,20 @@ function AppNav() {
 
       const data = await response.json();
 
-      console.log(data.Search);
-
-      if (!data.Error) {
-        setIsFetching(true);
-        setMovieResults(data.Search);
-      }
-
-      //setMovieResults(data.Search || []);
+      setMovieResults(data.Search || []);
     } catch (e) {}
   }
+  //create context list to insert into the 'value' for passing..
+  const fromContext = { searchValue, fetchMovieListAPI, movieResults };//for context
 
   return (
     <div className="App">
-      <Search
-        searchValue={searchValue}
-        fetchMovieListAPI={fetchMovieListAPI}
-        movieResults={movieResults}
-        isFetching={isFetching}
-      />
+      <MoviesContext.Provider value={fromContext}>
+        <Search />
+        <SearchList />
+      </MoviesContext.Provider>
     </div>
   );
 }
 
-function App() {
-  return (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={AppNav} />
-
-        <Route exact path="/:movieTitle" component={Movie} />
-
-        <Route render={() => <h1>Not Found</h1>} />
-      </Switch>
-    </Router>
-  );
-}
-//req.params.id
 export default App;

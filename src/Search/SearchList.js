@@ -1,27 +1,31 @@
-import React from "react";
-import { Link } from "react-router-dom";
+  
+import React, { useContext } from "react";
+import { MoviesContext } from "../context/MovieContext";
 import "./Search.css";
 
-const SearchList = ({ movieResults }) => {
+const SearchList = () => {
+  const fromCon = useContext(MoviesContext); //for context
+
+  const { searchValue, fetchMovieListAPI, movieResults } = fromCon; //for context
+
   function showMovieList() {
     return movieResults.map((item, i) => {
       return (
-        <li key={i}>
-          <img src={item.Poster} alt="some good movie" />
-          <Link
-            to={{
-              pathname: `${item.imdbID}`,
-              search: `?title=${item.Title}`,
-            }}
-          >
-            {item.Title}
-          </Link>
-        </li>
+        <div className="search-list" key={i}>
+          <div key={i} >
+            <img
+              src={item.Poster}
+              alt="some good movie"
+              style={{ width: "200px" }}
+            />
+            {/* {console.log(i)} */}
+          </div>
+         </div>
       );
     });
   }
 
-  return <ul className="results">{showMovieList()}</ul>;
+  return <ul>{showMovieList()}</ul>;
 };
 
 export default SearchList;

@@ -1,23 +1,26 @@
-import React from "react";
+  
+import React, { useContext } from "react";
 import SearchList from "./SearchList";
-import "./Search.css";
-const Search = ({
-  searchValue,
-  fetchMovieListAPI,
-  movieResults,
-  isFetching,
-}) => {
+import { MoviesContext } from "../context/MovieContext";//for context
+
+const Search = () => {
+  const fromCon = useContext(MoviesContext);//for context
+
+  const { searchValue, fetchMovieListAPI, movieResults } = fromCon;//for context
+
   return (
-    <div className="search">
+    <div>
       <input
         value={searchValue}
         onChange={(e) => fetchMovieListAPI(e.target.value)}
         type="text"
       />
 
-      {/* {searchValue !== "" ? <SearchList movieResults={movieResults} /> : ""} */}
-      {searchValue !== "" && isFetching && (
-        <SearchList movieResults={movieResults} />
+      {/* { searchValue !== "" ? <SearchList movieResults={movieResults} /> : ""} */}
+      {searchValue !== "" && (
+        <SearchList 
+        // movieResults={movieResults}
+        />
       )}
     </div>
   );
